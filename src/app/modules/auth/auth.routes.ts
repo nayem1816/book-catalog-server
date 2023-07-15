@@ -7,8 +7,13 @@ const route = express.Router();
 
 route.post(
   '/signup',
-  validateRequest(AuthValidation.SignupZodSchema),
+  validateRequest(AuthValidation.signupZodSchema),
   AuthController.signupUser
+);
+route.post(
+  '/login',
+  validateRequest(AuthValidation.loginZodSchema),
+  AuthController.loginUser
 );
 
 export const AuthRoute = route;
