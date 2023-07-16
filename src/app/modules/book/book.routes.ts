@@ -12,6 +12,7 @@ route.post(
   auth(),
   BookController.addBook
 );
+route.get('/:id', BookController.getSingleBook);
 route.get('/', BookController.getAllBooks);
 
 export const BookRoute = route;

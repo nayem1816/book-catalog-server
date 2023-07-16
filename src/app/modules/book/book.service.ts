@@ -74,7 +74,16 @@ const getAllBooks = async (
   };
 };
 
+const getSingleBook = async (id: string): Promise<IBook | null> => {
+  const result = await Book.findById({ _id: id })
+    .populate('user')
+    .populate('reviews.user');
+
+  return result;
+};
+
 export const BookService = {
   addBook,
   getAllBooks,
+  getSingleBook,
 };
