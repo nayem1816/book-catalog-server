@@ -12,8 +12,8 @@ const createToken = (
   return token;
 };
 
-const verifyToken = (refreshToken: string, secretKey: Secret): JwtPayload => {
-  const verifiedToken = jwt.verify(refreshToken, secretKey);
+const verifyToken = (token: string, secretKey: Secret): JwtPayload => {
+  const verifiedToken = jwt.verify(token, secretKey);
 
   return verifiedToken as JwtPayload;
 };
