@@ -81,6 +81,10 @@ const getSingleBook = async (id: string): Promise<IBook | null> => {
     .populate('user')
     .populate('reviews.user');
 
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+  }
+
   return result;
 };
 
@@ -109,9 +113,32 @@ const updateBook = async (
   return result;
 };
 
+const deleteBook = async (
+  id: string,
+  userId: Types.ObjectId
+): Promise<IBook | null> => {
+  const isExistBook = await Book.findById({ _id: id });
+
+  if (!isExistBook) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+  }
+
+  if (isExistBook.user.toString() !== userId.toString()) {
+    throw new ApiError(
+      httpStatus.UNAUTHORIZED,
+      'You are not authorized to perform this action'
+    );
+  }
+
+  const result = await Book.findByIdAndDelete({ _id: id });
+
+  return result;
+};
+
 export const BookService = {
   addBook,
   getAllBooks,
   getSingleBook,
   updateBook,
+  deleteBook,
 };

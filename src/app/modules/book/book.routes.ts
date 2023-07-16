@@ -20,5 +20,6 @@ route.patch(
   auth(),
   BookController.updateBook
 );
+route.delete('/:id', auth(), BookController.deleteBook);
 
 export const BookRoute = route;

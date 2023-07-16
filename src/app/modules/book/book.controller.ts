@@ -80,9 +80,27 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const { _id } = req.user as JwtPayload;
+    const result = await BookService.deleteBook(id, _id);
+
+    sendResponse<IBook>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Book deleted successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const BookController = {
   addBook,
   getAllBooks,
   getSingleBook,
   updateBook,
+  deleteBook,
 };
