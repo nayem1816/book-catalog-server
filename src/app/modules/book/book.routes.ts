@@ -14,5 +14,11 @@ route.post(
 );
 route.get('/:id', BookController.getSingleBook);
 route.get('/', BookController.getAllBooks);
+route.patch(
+  '/:id',
+  validateRequest(BookValidation.updateBookZodSchema),
+  auth(),
+  BookController.updateBook
+);
 
 export const BookRoute = route;

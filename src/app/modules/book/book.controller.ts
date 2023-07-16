@@ -63,8 +63,26 @@ const getSingleBook = async (
   }
 };
 
+const updateBook = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const { _id } = req.user as JwtPayload;
+    const result = await BookService.updateBook(id, req.body, _id);
+
+    sendResponse<IBook>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Book updated successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const BookController = {
   addBook,
   getAllBooks,
   getSingleBook,
+  updateBook,
 };

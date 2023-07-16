@@ -5,6 +5,8 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { bookSearchableFields } from './book.constant';
 import { IGenericResponse } from '../../../interfaces/common';
+import ApiError from '../../../errors/ApiError';
+import httpStatus from 'http-status';
 
 const addBook = async (payload: IBook, id: Types.ObjectId): Promise<IBook> => {
   payload.user = id;
@@ -82,8 +84,34 @@ const getSingleBook = async (id: string): Promise<IBook | null> => {
   return result;
 };
 
+const updateBook = async (
+  id: string,
+  payload: IBook,
+  userId: Types.ObjectId
+): Promise<IBook | null> => {
+  const isExistBook = await Book.findById({ _id: id });
+
+  if (!isExistBook) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+  }
+
+  if (isExistBook.user.toString() !== userId.toString()) {
+    throw new ApiError(
+      httpStatus.UNAUTHORIZED,
+      'You are not authorized to perform this action'
+    );
+  }
+
+  const result = await Book.findByIdAndUpdate({ _id: id }, payload, {
+    new: true,
+  });
+
+  return result;
+};
+
 export const BookService = {
   addBook,
   getAllBooks,
   getSingleBook,
+  updateBook,
 };
