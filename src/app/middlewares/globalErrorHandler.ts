@@ -22,6 +22,8 @@ const globalErrorHandler: ErrorRequestHandler = (
     ? console.log(`🐱‍🏍 globalErrorHandler ~~`, { error })
     : console.log(`🐱‍🏍 globalErrorHandler ~~`, error);
 
+  // mongoDuplicateError error handler
+
   let statusCode = 500;
   let message = 'Something went wrong !';
   let errorMessages: IGenericErrorMessage[] = [];
@@ -41,6 +43,21 @@ const globalErrorHandler: ErrorRequestHandler = (
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorMessages = simplifiedError.errorMessages;
+  } else if (error.name === 'MongoServerError') {
+    if (error.code === 11000) {
+      const key = Object.keys(error.keyValue);
+
+      const mess = `This ${key} already exist.`;
+      message = mess;
+      errorMessages = error?.message
+        ? [
+            {
+              path: '',
+              message: mess,
+            },
+          ]
+        : [];
+    }
   } else if (error instanceof ApiError) {
     statusCode = error?.statusCode;
     message = error.message;
